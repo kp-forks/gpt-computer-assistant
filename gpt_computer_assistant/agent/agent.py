@@ -13,7 +13,7 @@ except ImportError:
     from tooler import *
     from display_tools import *
     from teams import *
-    from agent_tools import get_tools
+    from agent.agent_tools import get_tools
 
 
 from langchain.agents import AgentExecutor, create_json_chat_agent
@@ -70,6 +70,9 @@ def get_agent_executor():
         tools += [click_on_a_text_on_the_screen, click_on_a_icon_on_the_screen, move_on_a_text_on_the_screen, move_on_a_icon_on_the_screen, mouse_scroll]
 
 
+    tools += [get_texts_on_the_screen]
+
+
     if llm_settings[model]["provider"] == "openai" or llm_settings[model]["provider"] == "groq":
         return chat_agent_executor.create_tool_calling_executor(get_model(), tools)
 
@@ -77,8 +80,6 @@ def get_agent_executor():
 
     if llm_settings[model]["provider"] == "ollama":
         print("Ollama tool len", len(tools))
-
-
-        return get_model()
+        return chat_agent_executor.create_tool_calling_executor(get_model(), tools)
 
             

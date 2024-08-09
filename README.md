@@ -45,17 +45,72 @@ Powered by <a href="https://github.com/Upsonic/Tiger"><strong>Upsonic Tiger 🐅
 
 
 
-## Installation and Run
-Needed >= Python 3.9
+## Install and run
+*Python 3.9 or higher is required
+
 ```console
-pip3 install 'gpt-computer-assistant[base]'
+pip install 'gpt-computer-assistant[base]'
 ```
+
+To run gpt-computer-assistant, simply type
 
 ```console
 computerassistant
 ```
 
-### Wake Word | NEW
+
+https://github.com/onuratakan/gpt-computer-assistant/assets/41792982/26ae3624-e619-44d6-9b04-f39cf1ac1f8f
+
+
+### Local text-to-speech | NEW
+<details>
+
+Now GCA just support totaly local text-to-speech with Microsoft Open Source model. For enabling and using it you should run this command:
+
+```console
+pip3 install 'gpt-computer-assistant[local_tts]'
+```
+
+After that, just go to LLM setting section and select `microsoft_local` in tts combobox.
+</details>
+
+
+### Local speech-to-text | NEW
+<details>
+
+Now GCA just support totaly local speech-to-text with OpenAI Whisper tiny model. For enabling and using it you should run this commands:
+
+```console
+pip3 install 'gpt-computer-assistant[local_stt]'
+```
+
+Installing ffmpeg:
+
+```console
+# on Ubuntu or Debian
+sudo apt update && sudo apt install ffmpeg
+
+# on Arch Linux
+sudo pacman -S ffmpeg
+
+# on MacOS using Homebrew (https://brew.sh/)
+brew install ffmpeg
+
+# on Windows using Chocolatey (https://chocolatey.org/)
+choco install ffmpeg
+
+# on Windows using Scoop (https://scoop.sh/)
+scoop install ffmpeg
+```
+
+
+
+After that, just go to LLM setting section and select `openai_whisper_local` in stt combobox.
+</details>
+
+
+
+### Wake Word
 <details>
 
 
@@ -64,6 +119,19 @@ We have added Pvporcupine integration. To use it, you need to install an additio
 ```console
 pip3 install 'gpt-computer-assistant[wakeword]'
 ```
+</details>
+
+### Error Solutions
+<details>
+
+#### Setuptools
+
+```console
+pip install setuptools --upgrade
+```
+
+</details>
+
 
 After that, please enter your [Pvporcupine](https://picovoice.ai/) API key and enable the wake word feature.
 </details>
@@ -194,6 +262,22 @@ def hobbies():
     return "Tennis, volleyball, and swimming."
 
 
+# Create an operation, it will inform the user with top bar animation
+with remote.operation("Scanning")
+  remote.wait(5)
+
+
+
+color_name = remote.ask("What is your favorite color")
+
+
+remote.set_background_color(255, 255, 255)
+remote.set_opacity(200)
+
+remote.set_border_radius(3)
+
+remote.collapse()
+remote.expand()
 ```
 
 
@@ -214,9 +298,6 @@ def hobbies():
   <br>
   <br>
 </p>
-
-
-https://github.com/onuratakan/gpt-computer-assistant/assets/41792982/26ae3624-e619-44d6-9b04-f39cf1ac1f8f
 
 
 ## Usage
@@ -263,8 +344,12 @@ https://github.com/onuratakan/gpt-computer-assistant/assets/41792982/26ae3624-e6
 | **Auto Stop Recording, when you complate talking**              | Completed     | Q2 2024        |
 | **Wakeup Word**              | Completed     | Q2 2024        |
 | **Continuously Conversations**              | Completed     | Q2 2024        |
-| **Adding more capability on device**              | Planned     | Q2 2024        |
-| DeepFace Integration (Facial Recognition)                    | Planned  | Q2 2024        |
+| **Adding more capability on device**              | Completed     | Q2 2024        |
+| **Local TTS**              | Completed     | Q3 2024        |
+| **Local STT**              | Completed     | Q3 2024        |
+| Tray Menu              | Completed     | Q3 2024        |
+| **Global Hotkey**              | On the way     | Q3 2024        |
+| DeepFace Integration (Facial Recognition)                    | Planned  | Q3 2024        |
 
 
 
@@ -277,6 +362,9 @@ At this time we have many infrastructure elements. We just aim to provide whole 
 
 | Capability                         | Status                      |
 |------------------------------------|----------------------------------|
+| **Local LLM with Vision (Ollama)**                    |            OK                    |
+| Local text-to-speech                    |            OK                    |
+| Local speech-to-text                    |            OK                    |
 | **Screen Read**                    |            OK                    |
 | **Click to and Text or Icon in the screen**                    |            OK                    |
 | **Move to and Text or Icon in the screen**                    |            OK                    |

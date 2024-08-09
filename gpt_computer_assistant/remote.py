@@ -5,7 +5,17 @@ import time
 import sys
 from upsonic import Tiger
 
-the_upsonic = Tiger()
+
+the_upsonic_ = None
+
+
+def the_upsonic():
+    global the_upsonic_
+
+    if not the_upsonic_:
+        the_upsonic_ = Tiger()
+    
+    return the_upsonic_
 
 class Remote_Client:
     def __init__(self, url):
@@ -15,9 +25,12 @@ class Remote_Client:
             raise Exception("The server is not running")
 
 
-    def send_request(self, path, data, dont_error=False):
+    def send_request(self, path, data, files=None, dont_error=False):
         try:
-            response = requests.post(self.url+path, json=data)
+            if files == None:
+                response = requests.post(self.url+path, json=data)
+            else:
+                response = requests.post(self.url+path, data=data, files=files)
             if response.status_code != 200:
                 try:
                     print(response.json())
@@ -103,7 +116,7 @@ class Remote_Client:
 
 
     def custom_tool(self, func):
-        the_code = textwrap.dedent(the_upsonic.extract_source(func))
+        the_code = textwrap.dedent(the_upsonic().extract_source(func))
         # Remove the first line
 
         if the_code.startswith("@remote.custom_tool"):
@@ -112,6 +125,144 @@ class Remote_Client:
         data = {"code": the_code}
         response = self.send_request("/custom_tool", data)
         return response["response"]
+
+
+    def top_bar_animation(self, text):
+        data = {"text": text}
+        response = self.send_request("/top_bar_activate", data)
+
+
+    def stop_top_bar_animation(self, text):
+        data = {"text": text}
+        response = self.send_request("/top_bar_deactivate", data)
+
+
+    def boop(self):
+        data = {}
+        response = self.send_request("/boop_sound", data)
+
+
+    def ask(self, question, wait_for_answer=None):
+        data = {"question":question, "wait_for_answer":wait_for_answer}
+        response = self.send_request("/ask_to_user", data)
+        return response["response"]
+
+
+    def set_text(self, text):
+        data = {"text": text}
+        response = self.send_request("/set_text", data)
+        return response["response"]
+
+    class OperationContext:
+        def __init__(self, client, text):
+            self.client = client
+            self.text = text
+
+        def __enter__(self):
+            self.client.top_bar_animation(self.text)
+            return self
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            self.client.stop_top_bar_animation(self.text)
+
+    def operation(self, text):
+        return self.OperationContext(self, text)
+
+
+    def set_background_color(self, r,g,b):
+        data = {"color": f"{r}, {g}, {b}"}
+        response = self.send_request("/set_background_color", data)
+        return response["response"]
+    
+    def set_opacity(self, opacity):
+        data = {"opacity": opacity}
+        response = self.send_request("/set_opacity", data)
+        return response["response"]
+
+    def set_border_radius(self, radius):
+        data = {"radius": radius}
+        response = self.send_request("/set_border_radius", data)
+        return response["response"]
+
+
+    def collapse(self):
+        data = {}
+        response = self.send_request("/collapse", data)
+        return response["response"]
+    
+
+    def expand(self):
+        data = {}
+        response = self.send_request("/expand", data)
+        return response["response"]
+    
+
+    def save_openai_api_key(self, openai_api_key):
+        data = {"openai_api_key": openai_api_key}
+        response = self.send_request("/save_openai_api_key", data)
+        return response["response"]
+
+    def save_openai_url(self, openai_url):
+        data = {"openai_url": openai_url}
+        response = self.send_request("/save_openai_url", data)
+        return response["response"]
+    
+    def save_model_settings(self, model_name):
+        data = {"model_name": model_name}
+        response = self.send_request("/save_model_settings", data)
+        return response["response"]
+
+    def save_groq_api_key(self, groq_api_key):
+        data = {"groq_api_key": groq_api_key}
+        response = self.send_request("/save_groq_api_key", data)
+        return response["response"]
+
+    def save_google_api_key(self, google_api_key):
+        data = {"google_api_key": google_api_key}
+        response = self.send_request("/save_google_api_key", data)
+        return response["response"]
+    
+    def save_tts_model_settings(self, model_name):
+        data = {"model_name": model_name}
+        response = self.send_request("/save_tts_model_settings", data)
+        return response["response"]
+
+    def save_stt_model_settings(self, model_name):
+        data = {"model_name": model_name}
+        response = self.send_request("/save_stt_model_settings", data)
+        return response["response"]
+
+
+    
+
+    def show_logo(self):
+        data = {}
+        response = self.send_request("/show_logo", data)
+        return response["response"]
+    
+    def hide_logo(self):
+        data = {}
+        response = self.send_request("/hide_logo", data)
+        return response["response"]
+
+
+    def custom_logo(self, logo_path):
+        data = {}
+        files = {"logo": open(logo_path, "rb")}
+        response = self.send_request("/custom_logo_upload", data, files)
+        return response["response"]
+
+
+    def activate_long_gca(self):
+        data = {}
+        response = self.send_request("/activate_long_gca", data)
+        return response["response"]
+    
+    def deactivate_long_gca(self):
+        data = {}
+        response = self.send_request("/deactivate_long_gca", data)
+        return response["response"]
+
 
 
     def wait(self, second):
